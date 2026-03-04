@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9f9f9;
+  --foreground: #1a1a1a;
+  --ms-blue: #0078d4;
+  --sidebar-width: 260px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: white;
+  border-right: 1px solid #e5e5e5;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  color: #444;
+  font-weight: 500;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.sidebar-item:hover {
+  background-color: #f3f3f3;
+}
+
+.sidebar-item.active {
+  background-color: #ebf3fc;
+  color: #000;
+}
+
+.sidebar-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--ms-blue);
+}
+
+.hero-banner {
+  background: linear-gradient(90deg, #005a9e 0%, #0078d4 50%, #1a1a1a 50%, #1a1a1a 100%);
+  border-radius: 16px;
+  min-height: 380px;
+  position: relative;
+  overflow: hidden;
+}
+
+.platform-pill {
+  background: white;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #eee;
+}
+
+.dev-section {
+  background-color: #121212;
+  border-radius: 16px;
+  padding: 48px;
+  color: white;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.prod-app-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.prod-app-card:hover {
+  background: #f0f0f0;
+}
