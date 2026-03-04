@@ -2,19 +2,37 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // Create a Supabase admin client for user creation
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  {
+function getSupabaseAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    throw new Error('Supabase credentials are not configured');
+  }
+  
+  return createClient(url, key, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
+  });
+}
+
+const supabaseAdmin = (() => {
+  try {
+    return getSupabaseAdminClient();
+  } catch (error) {
+    console.warn('Failed to initialize Supabase admin client:', error);
+    return null;
   }
-);
+})();
 
 export async function POST(request: NextRequest) {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+    }
+    
     const { email, code } = await request.json();
 
     if (!email || !code) {

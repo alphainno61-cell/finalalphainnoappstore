@@ -1,10 +1,22 @@
 // Email sending utility using Resend
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = (() => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY is not configured');
+    return null;
+  }
+  return new Resend(apiKey);
+})();
 
 export async function sendOTPEmail(email: string, code: string) {
   try {
+    if (!resend) {
+      console.warn('Resend service is not configured');
+      return;
+    }
+    
     await resend.emails.send({
       from: 'Alphainno <onboarding@resend.dev>', // Update with your verified domain
       to: email,

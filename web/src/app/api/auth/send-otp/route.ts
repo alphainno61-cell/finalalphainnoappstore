@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { sendOTPEmail } from '@/lib/email';
+
+// Create a Supabase client for OTP operations
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    throw new Error('Supabase credentials are not configured');
+  }
+  
+  return createClient(url, key);
+}
+
+const supabase = (() => {
+  try {
+    return getSupabaseClient();
+  } catch (error) {
+    console.warn('Failed to initialize Supabase client:', error);
+    return null;
+  }
+})();
 
 // Generate a random 6-digit OTP
 function generateOTP(): string {
@@ -9,6 +30,10 @@ function generateOTP(): string {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!supabase) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+    }
+    
     const { email } = await request.json();
 
     if (!email) {
