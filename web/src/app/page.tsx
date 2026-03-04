@@ -3,6 +3,10 @@ import Link from "next/link";
 import { StoreShell } from "@/components/store-shell";
 import { games, productivityApps } from "@/lib/apps";
 
+// Force static generation
+export const dynamic = "force-static";
+export const revalidate = 3600; // Revalidate every hour
+
 export default function Home() {
   return (
     <StoreShell active="home">
